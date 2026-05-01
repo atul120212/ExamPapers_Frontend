@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import Hero from '@/components/Hero';
 import CategoryGrid from '@/components/CategoryGrid';
 import FilterFlow from '@/components/FilterFlow';
+import Breadcrumb from '@/components/Breadcrumb';
 import PapersGrid from '@/components/PapersGrid';
 import Filters from '@/components/Filters';
 
@@ -29,8 +30,11 @@ export default async function Home({
         </div>
       </section>
 
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb />
+
       {/* Papers Grid Section */}
-      <div className="min-h-screen bg-background py-8">
+      <div className="min-h-screen bg-background py-8" id="papers-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Filters Sidebar */}
