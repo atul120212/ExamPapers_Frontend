@@ -1,5 +1,7 @@
 import { Suspense } from 'react';
 import Hero from '@/components/Hero';
+import CategoryGrid from '@/components/CategoryGrid';
+import BoardSelector from '@/components/BoardSelector';
 import PapersGrid from '@/components/PapersGrid';
 import Filters from '@/components/Filters';
 
@@ -13,8 +15,27 @@ export default async function Home({
   return (
     <>
       <Hero />
-      <div className="min-h-screen bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <CategoryGrid />
+      
+      {/* Board Selection Section */}
+      <section className="py-16 sm:py-24 bg-ink-soft" id="boards">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Suspense fallback={<div className="space-y-8">
+            <div className="h-12 bg-surface rounded animate-pulse" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {[...Array(12)].map((_, i) => (
+                <div key={i} className="h-40 bg-surface rounded animate-pulse" />
+              ))}
+            </div>
+          </div>}>
+            <BoardSelector />
+          </Suspense>
+        </div>
+      </section>
+
+      {/* Papers Grid Section */}
+      <div className="min-h-screen bg-background py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Filters Sidebar */}
             <Suspense fallback={<div className="h-96 bg-surface rounded animate-pulse" />}>
@@ -28,7 +49,7 @@ export default async function Home({
                   <div key={i} className="h-96 bg-surface rounded animate-pulse" />
                 ))}
               </div>}>
-                <PapersGrid searchQuery={params.search as string} />
+                <PapersGrid searchQuery={params.search ? String(params.search) : ''} />
               </Suspense>
             </div>
           </div>
