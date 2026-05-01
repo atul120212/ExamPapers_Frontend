@@ -1,7 +1,7 @@
 // API and Configuration logic for ExamVault
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
   ? window.location.origin 
-  : 'https://exampaper-backend.onrender.com'; // Replace with your actual Render URL
+  : 'https://exam-papers-backend.vercel.app'; // New Vercel Backend URL
 
 // Global state and configuration variables
 let _sb = { 
