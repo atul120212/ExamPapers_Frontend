@@ -3,11 +3,13 @@ import Hero from '@/components/Hero';
 import PapersGrid from '@/components/PapersGrid';
 import Filters from '@/components/Filters';
 
-export default function Home({
+export default async function Home({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[]>;
+  searchParams: Promise<Record<string, string | string[]>>;
 }) {
+  const params = await searchParams;
+
   return (
     <>
       <Hero />
@@ -26,7 +28,7 @@ export default function Home({
                   <div key={i} className="h-96 bg-surface rounded animate-pulse" />
                 ))}
               </div>}>
-                <PapersGrid searchQuery={searchParams.search as string} />
+                <PapersGrid searchQuery={params.search as string} />
               </Suspense>
             </div>
           </div>
