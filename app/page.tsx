@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import Hero from '@/components/Hero';
 import CategoryGrid from '@/components/CategoryGrid';
-import BoardSelector from '@/components/BoardSelector';
+import FilterFlow from '@/components/FilterFlow';
 import PapersGrid from '@/components/PapersGrid';
 import Filters from '@/components/Filters';
 
@@ -17,18 +17,14 @@ export default async function Home({
       <Hero />
       <CategoryGrid />
       
-      {/* Board Selection Section */}
-      <section className="py-16 sm:py-24 bg-ink-soft" id="boards">
+      {/* Step-based Filter Flow Section */}
+      <section className="py-16 sm:py-24 bg-ink-soft" id="filters">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Suspense fallback={<div className="space-y-8">
             <div className="h-12 bg-surface rounded animate-pulse" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {[...Array(12)].map((_, i) => (
-                <div key={i} className="h-40 bg-surface rounded animate-pulse" />
-              ))}
-            </div>
+            <div className="h-48 bg-surface rounded animate-pulse" />
           </div>}>
-            <BoardSelector />
+            <FilterFlow />
           </Suspense>
         </div>
       </section>
