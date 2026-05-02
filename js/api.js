@@ -1,7 +1,7 @@
 // API and Configuration logic for ExamVault
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-  ? window.location.origin 
-  : 'https://exam-papers-backend.vercel.app'; // New Vercel Backend URL
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:8000'
+  : 'https://exam-papers-backend.vercel.app'; // Vercel Backend URL
 
 // Global state and configuration variables
 let _sb = { 
@@ -28,6 +28,7 @@ const S = {
   board: '',      // Board or University ID
   cls: '',        // Class or Course ID
   stream: '',     // Stream or Semester ID
+  branch: '',     // Branch (college mode only)
   search: '',
   loading: false,
   page: 1,
@@ -109,9 +110,16 @@ async function fetchPapers() {
     perPage: S.perPage
   });
   
-  if (S.board) params.append(S.mode === 'school' ? 'board' : 'board', S.board);
+  if (S.board) params.append('board', S.board);
   if (S.cls) params.append('cls', S.cls);
-  if (S.stream) params.append(S.mode === 'school' ? 'stream' : 'branch', S.stream);
+  
+  if (S.mode === 'school') {
+    if (S.stream) params.append('stream', S.stream);
+  } else if (S.mode === 'college') {
+    if (S.branch) params.append('branch', S.branch);
+    if (S.stream) params.append('semesters', S.stream); // S.stream holds the semester in college mode
+  }
+  
   if (S.search) params.append('search', S.search);
   
   if (S.filters.years.length) params.append('years', S.filters.years.join(','));
@@ -123,13 +131,18 @@ async function fetchPapers() {
       fetch(`${API_BASE}/api/papers?${params.toString()}`),
       fetch(`${API_BASE}/api/facets?${params.toString()}`)
     ]);
-    
+
+    if (!pRes.ok) throw new Error(`API error: ${pRes.status}`);
+
     const pData = await pRes.json();
-    PAPERS = pData.items;
-    TOTAL_PAPERS = pData.total;
-    FACETS = await fRes.json();
+    PAPERS = pData.items || [];
+    TOTAL_PAPERS = pData.total || 0;
+    if (fRes.ok) FACETS = await fRes.json();
   } catch (e) {
     console.error("❌ Failed to fetch papers:", e);
+    PAPERS = [];
+    TOTAL_PAPERS = 0;
+    if (typeof toast === 'function') toast('❌ Failed to load papers. Check your connection.');
   } finally {
     S.loading = false;
     if (typeof render === 'function') render();

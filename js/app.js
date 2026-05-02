@@ -32,6 +32,8 @@ function setMode(m) {
   S.board = '';
   S.cls = '';
   S.stream = '';
+  S.branch = '';
+  S.filters = { years: [], types: [], subjects: [] };
   render();
 }
 
@@ -66,14 +68,19 @@ function setCls(c) {
 }
 
 function setBranch(b) {
-  S.stream = b; // We reuse stream for Branch in college mode
+  S.branch = b; // Correctly store branch in S.branch
+  S.stream = '';  // Reset stream (semester)
   S.step = 3; // Go to Semester
   render();
 }
 
+function setStream(s) {
+  S.stream = s;
+  finishSteps();
+}
+
 function setSem(s) {
-  S.branch = S.stream; // Save branch
-  S.stream = s; // Use stream for semester ID in query
+  S.stream = s; // S.stream holds the semester
   finishSteps();
 }
 
@@ -203,6 +210,22 @@ function openPaper(id) {
     downloadPaper(id);
 }
 
+// Nav search helpers
+let _navSearchTimer = null;
+function handleNavSearch(val) {
+  S.search = val;
+  clearTimeout(_navSearchTimer);
+  _navSearchTimer = setTimeout(() => applyNavSearch(), 500);
+}
+async function applyNavSearch() {
+  if (S.step !== 4) {
+    S.step = 4;
+    S.page = 1;
+  }
+  await fetchPapers();
+  render();
+}
+
 // Expose functions to window for onclick handlers
 window.setMode = setMode;
 window.setBoard = setBoard;
@@ -229,3 +252,5 @@ window.handleLogout = handleLogout;
 window.updateRole = updateRole;
 window.fetchAdminUsers = fetchAdminUsers;
 window.render = render;
+window.handleNavSearch = handleNavSearch;
+window.applyNavSearch = applyNavSearch;

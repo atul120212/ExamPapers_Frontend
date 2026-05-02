@@ -115,9 +115,9 @@ function renderStepWizard() {
         const allCourses = [...(COURSES.ug || []), ...(COURSES.pg || []), ...(COURSES.diploma || [])];
         const course = allCourses.find(x => x.id === S.cls);
         const branches = course ? course.branches : ["General"];
-        items = branches.map(b => ({ id: b, name: b }));
+        let items = branches.map(b => ({ id: b, name: b }));
         options = items.map(s => `
-          <button class="opt-btn ${S.stream === s.id ? 'selected' : ''}" onclick="setBranch('${s.id}')">
+          <button class="opt-btn ${S.branch === s.id ? 'selected' : ''}" onclick="setBranch('${s.id}')">
             ${s.name}
           </button>
         `).join('');
